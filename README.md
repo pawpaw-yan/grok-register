@@ -688,7 +688,7 @@ ssh -L 5999:localhost:5999 <host>     # 在观看机上执行
 
 ### A1 部署注意
 
-- A1 旧版 `run-batch.sh` 硬编码 `DISPLAY=:99`；新版（仓库根目录同名文件）已删掉该前缀，桌面交给 `display_backend=auto`：A1 上自动检测到 neko 容器的 Xorg `:99` 并复用（X99 socket 在主机可见），非 neko 机器则自动拉 Xvfb。
+- A1 跑批（后台不断线）：`mkdir -p logs && nohup python3 -u grok_register_ttk.py cli 5 > logs/batch-$(date +%Y%m%d-%H%M%S).log 2>&1 &`，`tail -f` 看进度，`kill -INT <PID>` 优雅停。桌面交给 `display_backend=auto`：A1 上自动检测到 neko 容器的 Xorg `:99` 并复用（X99 socket 在主机可见），非 neko 机器则自动拉 Xvfb。
 - **没有 neko 的机器**：`apt install xvfb` 一步即可，`display_backend` 保持默认 `auto`（或显式 `xvfb`）；显示号用 `display_num` 配（默认 99），分辨率用 `display_screen`。
 - 发现 A1 上两个 Xorg 挂在同一显示号（`:99.0` 自 9 月 21 日、`:99` 自 10 月 6 日）——历史残留，同步时清理旧实例避免抢 socket。
 - VNC 默认 viewonly + 127.0.0.1 + SSH 隧道，符合"远程看过程 debug"的需求。
